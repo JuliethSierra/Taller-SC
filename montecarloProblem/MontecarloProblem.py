@@ -7,7 +7,6 @@ class MontecarloProblem:
         self.etiqueta = tk.Label(master, text="MontecarloProblem")
         self.etiqueta.pack()"""
 import tkinter as tk
-import matplotlib.pyplot as plt
 from montecarloProblem.Game import Game
 class MontecarloProblem:
     def __init__(self, master):

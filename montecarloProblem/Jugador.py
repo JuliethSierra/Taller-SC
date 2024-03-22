@@ -1,6 +1,6 @@
-import random
-import numpy as np
 import matplotlib.pyplot as plt
+import random
+
 
 # Clase para representar un jugador
 class Jugador:

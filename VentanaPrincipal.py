@@ -1,15 +1,16 @@
 import tkinter as tk
-from generateNumbers.GenerateNumbers import VentanaGeneracionNumeros
+from MenuNumbers import MenuNumbers
 from frogProblem.FrogProblem import FrogProblem
 from generateTests.GenerateTests import GenerateTests
 from montecarloProblem.MontecarloProblem import MontecarloProblem
+
 
 class VentanaPrincipal:
     def __init__(self, master):
         self.master = master
         self.master.title("Interfaz Gráfica")
 
-        self.boton_generar_numeros = tk.Button(master, text="Generación de números pseudoaleatorios", command=self.generar_numeros_pseudoaleatorios)
+        self.boton_generar_numeros = tk.Button(master, text="Generación de números pseudoaleatorios", command=self.menu_numbers)
         self.boton_generar_numeros.pack()
 
         self.boton_pruebas = tk.Button(master, text="Pruebas", command=self.pruebas)
@@ -21,11 +22,11 @@ class VentanaPrincipal:
         self.boton_montecarlo = tk.Button(master, text="Montecarlo", command=self.montecarlo)
         self.boton_montecarlo.pack()
 
-    def generar_numeros_pseudoaleatorios(self):
+    def menu_numbers(self):
         ventana_generacion = tk.Toplevel(self.master)
-        ventana_generacion.title("Generación de números pseudoaleatorios")
+        ventana_generacion.title("Menu Numeros Pseudoaleatorios")
         ventana_generacion.geometry("300x200")
-        app = VentanaGeneracionNumeros(ventana_generacion)
+        app = MenuNumbers(ventana_generacion)
 
     def pruebas(self):
         ventana_generacion = tk.Toplevel(self.master)
