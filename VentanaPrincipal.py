@@ -22,6 +22,8 @@ class VentanaPrincipal:
         self.boton_montecarlo = tk.Button(master, text="Montecarlo", command=self.montecarlo)
         self.boton_montecarlo.pack()
 
+        self.ventana_problema_rana = None
+
     def menu_numbers(self):
         ventana_generacion = tk.Toplevel(self.master)
         ventana_generacion.title("Menu Numeros Pseudoaleatorios")
@@ -35,13 +37,21 @@ class VentanaPrincipal:
         app = GenerateTests(ventana_generacion)
 
     def problema_de_la_rana(self):
-        ventana_generacion = tk.Toplevel(self.master)
-        ventana_generacion.title("Problema de la rana")
-        ventana_generacion.geometry("300x200")
-        app = FrogProblem(ventana_generacion)
+        if self.ventana_problema_rana is None or not self.ventana_problema_rana.winfo_exists():
+            self.master.iconify()
+            self.ventana_problema_rana = tk.Toplevel()
+            self.ventana_problema_rana.title("Problema de la rana")
+            self.ventana_problema_rana.geometry("300x200")
+            app = FrogProblem(self.ventana_problema_rana, self.master)
 
     def montecarlo(self):
         ventana_generacion = tk.Toplevel(self.master)
         ventana_generacion.title("MontecarloProblem")
         ventana_generacion.geometry("300x200")
         app = MontecarloProblem(ventana_generacion)
+
+    def mostrar_ventana_principal(self):
+        if self.ventana_problema_rana:
+            self.ventana_problema_rana.destroy()
+            self.ventana_problema_rana = None
+        self.master.deiconify()
