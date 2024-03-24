@@ -1,7 +1,6 @@
-import matplotlib.pyplot as plt
 import tkinter as tk
-from tkinter import ttk  # Importa ttk como submódulo de tkinter
-
+from tkinter import ttk
+import matplotlib.pyplot as plt
 
 class PseudoRandomGenerator:
     def __init__(self, a, c, m, seed):
@@ -90,5 +89,5 @@ class GUIC(tk.Tk):
         plt.show()
 
 if __name__ == "__main__":
-    app = GUI()
+    app = GUIC()
     app.mainloop()
