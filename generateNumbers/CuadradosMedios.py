@@ -78,6 +78,9 @@ class GUIM(tk.Tk):
         for i, (iteration, xi, ri, ni) in enumerate(values, start=1):
             self.results_text.insert(tk.END, f"X{i}: {xi}\n")
             self.tree.insert("", "end", values=(i, iteration, xi, ri, ni))
+            print("XI: ", xi)
+
+
 
     def plot_numbers(self):
         a = float(self.a_entry.get())
