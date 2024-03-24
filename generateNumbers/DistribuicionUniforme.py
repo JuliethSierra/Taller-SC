@@ -93,5 +93,5 @@ class GUIU(tk.Tk):
         plt.show()
 
 if __name__ == "__main__":
-    app = GUI()
+    app = GUIU()
     app.mainloop()
