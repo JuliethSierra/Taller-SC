@@ -2,7 +2,6 @@ import tkinter as tk
 from collections import Counter
 from tkinter import ttk
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
@@ -147,10 +146,11 @@ class FrogProblem:
         self.clear_previous_graph()
 
         numbers = read_document()
-
+        jumps = 0
         x, y = [0], [0]
 
         for num in numbers:  # Se lee cada número y se verifica
+            jumps += 1
             if num < 2.5:  # Menor a 2.5 es hacia arriba por ese es ( y + 1 )
                 x.append(x[-1])
                 y.append(y[-1] + 1)
@@ -165,7 +165,7 @@ class FrogProblem:
                 y.append(y[-1])
 
             if x[-1] == 250 and y[-1] == 300:
-                print("SI LLEGÓ LA RANA")
+                print(f"SI LLEGÓ LA RANA!! Punto: (250, 300) saltos: {jumps}")
                 break
 
         fig, ax = plt.subplots(figsize=(12, 12))
@@ -188,46 +188,47 @@ class FrogProblem:
     def generar_paseo_3D(self):
         self.clear_previous_graph()
         numbers = read_document()
-
+        jumps = 0
         # Nuestras 3 dimensiones
         x, y, z = [0], [0], [0]
         # Variables para después ver la cantidad de datos
         c1, c2, c3, c4, c5, c6 = 0, 0, 0, 0, 0, 0
         for i, num in enumerate(numbers):
-            if num < 1.67:              # Menor a 1.67 es hacia arriba (y+1)
+            jumps += 1
+            # Verificar si la rana ha llegado a la posición solicitada
+            if x[-1] == 45 and y[-1] == 23 and z[-1] == 17:
+                print(f"La rana llegó a la posición (45, 23, 17) en {jumps} saltos.")
+                break
+            if num < 1.67:  # Menor a 1.67 es hacia arriba (y+1)
                 x.append(x[-1])
                 y.append(y[-1] + 1)
                 z.append(z[-1])
                 c1 += 1
-            elif 1.67 <= num < 3.33:   # Entre 1.67 y 3.33 es hacia abajo (y-1)
+            elif 1.67 <= num < 3.33:  # Entre 1.67 y 3.33 es hacia abajo (y-1)
                 x.append(x[-1])
                 y.append(y[-1] - 1)
                 z.append(z[-1])
                 c2 += 1
-            elif 3.33 <= num < 5:       # Entre 3.33 y 5 es hacia la derecha (x+1)
+            elif 3.33 <= num < 5:  # Entre 3.33 y 5 es hacia la derecha (x+1)
                 x.append(x[-1] + 1)
                 y.append(y[-1])
                 z.append(z[-1])
                 c3 += 1
-            elif 5 <= num < 6.67:       # Entre 5 y 6.67 es hacia la izquierda(x-1)
+            elif 5 <= num < 6.67:  # Entre 5 y 6.67 es hacia la izquierda(x-1)
                 x.append(x[-1] - 1)
                 y.append(y[-1])
                 z.append(z[-1])
                 c4 += 1
-            elif 6.67 <= num < 8.33:    # Entre 6.67 y 8.33 es hacia adelante (z+1)
+            elif 6.67 <= num < 8.33:  # Entre 6.67 y 8.33 es hacia adelante (z+1)
                 x.append(x[-1])
                 y.append(y[-1])
                 z.append(z[-1] + 1)
                 c5 += 1
-            elif 8.33 <= num < 10:      # Entre 8.33 y 10 es hacia atrás (z-1)
+            elif 8.33 <= num < 10:  # Entre 8.33 y 10 es hacia atrás (z-1)
                 x.append(x[-1])
                 y.append(y[-1])
                 z.append(z[-1] - 1)
                 c6 += 1
-            # Verificar si la rana ha llegado a la posición solicitada
-            if x[-1] == 45 and y[-1] == 23 and z[-1] == 17:
-                print("La rana ha llegado a la posición (45, 23, 17) en {} saltos.".format(i + 1))
-                break
 
         print(f"C1: {c1} C2: {c2} C3: {c3} C4: {c4} C5: {c5} C6: {c6}")
         fig = plt.figure()
