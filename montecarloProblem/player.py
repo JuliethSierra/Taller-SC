@@ -6,8 +6,9 @@ class Player:
         self.experience = 10
         self.luck = luck
         self.points = 0
-        self.enduranceRound = 0
+        self.enduranceRound = endurance
         self.roundWin = 0
+        self.roundDiscount = 0
 
     def get_player_id(self):
         return self.player_id
@@ -33,6 +34,9 @@ class Player:
     def get_round_win(self):
         return self.roundWin
     
+    def get_round_discount(self):
+        return self.roundDiscount
+    
     def set_player_id(self, player_id):
         self.player_id = player_id
 
@@ -57,6 +61,9 @@ class Player:
     def set_roundWin(self, roundWin):
         self.roundWin = roundWin
 
+    def set_roundDiscount(self, roundDiscount):
+        self.roundDiscount = roundDiscount
+
     def __str__(self):
-        return f"Player ID: {self.player_id}, Gender: {self.gender}, endurance:{self.endurance}, enduranceRound:{self.get_endurance_round()}, Luck: {self.luck}"
+        return f"Player ID: {self.player_id}, Gender: {self.gender}, endurance:{self.endurance}, enduranceRound:{self.get_endurance_round()}, Luck: {self.luck}, roundWin: {self.get_round_win()},  experience: {self.get_experience()}, points: {self.get_points()}"
 
