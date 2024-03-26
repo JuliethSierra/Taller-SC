@@ -1,15 +1,16 @@
 import tkinter as tk
-from generateNumbers.GenerateNumbers import VentanaGeneracionNumeros
+from MenuNumbers import MenuNumbers
 from frogProblem.FrogProblem import FrogProblem
 from generateTests.GenerateTests import GenerateTests
 from montecarloProblem.MontecarloProblem import MontecarloProblem
+
 
 class VentanaPrincipal:
     def __init__(self, master):
         self.master = master
         self.master.title("Interfaz Gráfica")
 
-        self.boton_generar_numeros = tk.Button(master, text="Generación de números pseudoaleatorios", command=self.generar_numeros_pseudoaleatorios)
+        self.boton_generar_numeros = tk.Button(master, text="Generación de números pseudoaleatorios", command=self.menu_numbers)
         self.boton_generar_numeros.pack()
 
         self.boton_pruebas = tk.Button(master, text="Pruebas", command=self.pruebas)
@@ -21,11 +22,13 @@ class VentanaPrincipal:
         self.boton_montecarlo = tk.Button(master, text="Montecarlo", command=self.montecarlo)
         self.boton_montecarlo.pack()
 
-    def generar_numeros_pseudoaleatorios(self):
+        self.ventana_problema_rana = None
+
+    def menu_numbers(self):
         ventana_generacion = tk.Toplevel(self.master)
-        ventana_generacion.title("Generación de números pseudoaleatorios")
+        ventana_generacion.title("Menu Numeros Pseudoaleatorios")
         ventana_generacion.geometry("300x200")
-        app = VentanaGeneracionNumeros(ventana_generacion)
+        app = MenuNumbers(ventana_generacion)
 
     def pruebas(self):
         ventana_generacion = tk.Toplevel(self.master)
@@ -34,13 +37,21 @@ class VentanaPrincipal:
         app = GenerateTests(ventana_generacion)
 
     def problema_de_la_rana(self):
-        ventana_generacion = tk.Toplevel(self.master)
-        ventana_generacion.title("Problema de la rana")
-        ventana_generacion.geometry("300x200")
-        app = FrogProblem(ventana_generacion)
+        if self.ventana_problema_rana is None or not self.ventana_problema_rana.winfo_exists():
+            self.master.iconify()
+            self.ventana_problema_rana = tk.Toplevel()
+            self.ventana_problema_rana.title("Problema de la rana")
+            self.ventana_problema_rana.geometry("300x200")
+            app = FrogProblem(self.ventana_problema_rana, self.master)
 
     def montecarlo(self):
         ventana_generacion = tk.Toplevel(self.master)
         ventana_generacion.title("MontecarloProblem")
         ventana_generacion.geometry("300x200")
         app = MontecarloProblem(ventana_generacion)
+
+    def mostrar_ventana_principal(self):
+        if self.ventana_problema_rana:
+            self.ventana_problema_rana.destroy()
+            self.ventana_problema_rana = None
+        self.master.deiconify()

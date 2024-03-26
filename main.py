@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from VentanaPrincipal import VentanaPrincipal
 
 if __name__ == "__main__":
