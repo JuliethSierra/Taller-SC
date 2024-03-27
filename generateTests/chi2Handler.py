@@ -5,7 +5,16 @@ import os
 import numpy as np
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
-
+"""
+    Clase para manejar la realización de la prueba de Chi cuadrado y la visualización de los resultados.
+    
+    Args:
+        master (tk.Tk): Ventana principal de la aplicación.
+        numeros (list): Lista de números para realizar la prueba de Chi cuadrado.
+        intervalo (tuple): Intervalo de datos sobre el cual se realizará la prueba.
+        mostrar_proceso (bool): Indica si se debe mostrar el proceso detallado de la prueba.
+        mostrar_grafico (bool): Indica si se debe mostrar el histograma de los datos.
+    """
 
 class Chi2Handler:
     def __init__(self, master, numeros, intervalo, mostrar_proceso, mostrar_grafico):
@@ -17,6 +26,9 @@ class Chi2Handler:
 
 
     def mostrar_resultados(self):
+        """
+        Método para mostrar los resultados de la prueba de Chi cuadrado.
+        """
         if self.intervalo:
             intervalo_min = int(self.intervalo[0])
             intervalo_max = int(self.intervalo[1])
@@ -69,18 +81,36 @@ class Chi2Handler:
 
 
     def mostrar_tabla(self, tabla):
+         """
+        Método para mostrar una tabla con los resultados de la prueba de Chi cuadrado.
+
+        Args:
+            tabla (PrettyTable): Tabla con los resultados de la prueba.
+        """
         resultado_text = tk.Text(self.master, height=10, width=100)
         resultado_text.pack()
         resultado_text.insert(tk.END, str(tabla) + "\n\n")
 
 
     def mostrar_chi2_final(self, chi2):
+        """
+        Método para mostrar el valor final del estadístico de Chi cuadrado.
+
+        Args:
+            chi2 (float): Valor final del estadístico de Chi cuadrado.
+        """
         resultado_text = tk.Text(self.master, height=10, width=100)
         resultado_text.pack()
         resultado_text.insert(tk.END, f"Chi cuadrado final: {chi2}\n\n")
 
 
     def mostrar_histograma_chi2(self, numeros):
+         """
+        Método para mostrar un histograma de los datos.
+
+        Args:
+            numeros (list): Lista de números para graficar el histograma.
+        """
         plt.hist(numeros, bins=10, alpha=0.5, color='orange', edgecolor='black')  # Generar histograma de Chi cuadrado
         plt.xlabel('Valor')
         plt.ylabel('Frecuencia')
