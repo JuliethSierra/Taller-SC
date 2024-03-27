@@ -79,23 +79,22 @@ class Chi2Handler:
         else:
             messagebox.showwarning("Advertencia", "Por favor ingrese el intervalo de datos para la prueba Chi cuadrado.")
 
-
-    def mostrar_tabla(self, tabla):
-         """
+        """
         Método para mostrar una tabla con los resultados de la prueba de Chi cuadrado.
-
         Args:
             tabla (PrettyTable): Tabla con los resultados de la prueba.
         """
+    def mostrar_tabla(self, tabla):
+       
         resultado_text = tk.Text(self.master, height=10, width=100)
         resultado_text.pack()
         resultado_text.insert(tk.END, str(tabla) + "\n\n")
+        
 
 
     def mostrar_chi2_final(self, chi2):
         """
         Método para mostrar el valor final del estadístico de Chi cuadrado.
-
         Args:
             chi2 (float): Valor final del estadístico de Chi cuadrado.
         """
@@ -103,17 +102,15 @@ class Chi2Handler:
         resultado_text.pack()
         resultado_text.insert(tk.END, f"Chi cuadrado final: {chi2}\n\n")
 
-
-    def mostrar_histograma_chi2(self, numeros):
-         """
+        """
         Método para mostrar un histograma de los datos.
-
         Args:
             numeros (list): Lista de números para graficar el histograma.
         """
+    def mostrar_histograma_chi2(self, numeros):
+       
         plt.hist(numeros, bins=10, alpha=0.5, color='orange', edgecolor='black')  # Generar histograma de Chi cuadrado
         plt.xlabel('Valor')
         plt.ylabel('Frecuencia')
         plt.title('Histograma para la Prueba de Chi Cuadrado')
         plt.show()
-
