@@ -1,6 +1,7 @@
 class Team:
     def __init__(self, name, players=None):
         self.name = name
+        self.points = 0
         if players is None:
             self.players = []
         else:
@@ -11,6 +12,12 @@ class Team:
     
     def set_team_name(self, name):
         self.name = name
+
+    def get_team_points(self):
+        return self.points
+    
+    def set_team_points(self, points):
+        self.points = points
     
     def add_player(self, player):
         self.players.append(player)
@@ -18,12 +25,15 @@ class Team:
     def remove_player(self, player):
         self.players.remove(player)
 
-    #def __str__(self):
-    #   player_names = ", ".join([player.player_id for player in self.players])
-    #    return f"Team: {self.name}, Players: {player_names}"
+    def get_players(self):
+        return self.players
+
     def __str__(self):
-        player_details = "\n".join([f"Player ID: {player.player_id}, Gender: {player.get_gender()}, Endurance: {player.get_endurance()}, Experience: {player.get_experience()}, Luck: {player.get_luck()}" for player in self.players])
-        return f"Team: {self.name}\nPlayers:\n{player_details}"
+        print("Team Name:", self.name)
+        print("Team Points:", self.points)
+        print("Players:")
+        for player in self.players:
+            print(player)
 
 
 
