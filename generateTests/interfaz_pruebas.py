@@ -9,13 +9,10 @@ from prueba_poker import PruebaPoker
 from collections import Counter
 
 class InterfazPruebasEstadisticas:
+     #Constructor de la clase InterfazPruebasEstadisticas.
+        #Args:
+            #master: El widget padre para esta interfaz.
     def __init__(self, master):
-        """
-        Constructor de la clase InterfazPruebasEstadisticas.
-
-        Args:
-            master: El widget padre para esta interfaz.
-        """
         self.master = master
         master.title("Pruebas Estadísticas")
 
@@ -58,21 +55,19 @@ class InterfazPruebasEstadisticas:
         self.resultados_text.pack()
 
     def cargar_archivo(self):
-         """
-        Método para cargar un archivo seleccionado por el usuario.
-        """
+        
+       # Método para cargar un archivo seleccionado por el usuario.
+        
         archivo_path = filedialog.askopenfilename(initialdir=os.getcwd(), title="Seleccione un archivo")
         self.archivo_entry.delete(0, tk.END)
         self.archivo_entry.insert(0, archivo_path)
 
     def mostrar_resultados(self, prueba, resultado):
-         """
-        Método para mostrar los resultados de la prueba estadística.
-
-        Args:
-            prueba (str): El nombre de la prueba estadística.
-            resultado (bool): El resultado de la prueba (pasa o no pasa).
-        """
+        #Método para mostrar los resultados de la prueba estadística.
+        #Args:
+        #    prueba (str): El nombre de la prueba estadística.
+         #   resultado (bool): El resultado de la prueba (pasa o no pasa).
+        
         self.resultados_text.insert(tk.END, f"Resultado de la {prueba}:\n")
         if prueba == "Prueba de Varianza":
             if resultado:
@@ -108,11 +103,43 @@ class InterfazPruebasEstadisticas:
                 self.resultados_text.insert(tk.END, f"Los números pasan la {prueba}.\n\n")
             else:
                 self.resultados_text.insert(tk.END, f"Los números NO pasan la {prueba}.\n\n")
+    def calcular_resultados_prueba_varianza(self, numeros):
+        resultados = {}
+        if numeros:
+            resultados['n'] = len(numeros)
+            resultados['R'] = max(numeros) - min(numeros)
+            resultados['sigma'] = np.sqrt(PruebasEstadisticas.varianza_conjunto(numeros))
+            alpha = 0.05
+            alpha_over_2 = alpha / 2
+            one_minus_alpha_over_2 = 1 - alpha_over_2
+            X2_alpha_over_2 = 3.325
+            X2_one_minus_alpha_over_2 = 16.919
+            resultados['alpha'] = alpha
+            resultados['alpha_over_2'] = alpha_over_2
+            resultados['one_minus_alpha_over_2'] = one_minus_alpha_over_2
+            resultados['X2_alpha_over_2'] = X2_alpha_over_2
+            resultados['X2_one_minus_alpha_over_2'] = X2_one_minus_alpha_over_2
+            resultados['LI'] = resultados['sigma'] * np.sqrt((resultados['n'] - 1) / X2_one_minus_alpha_over_2)
+            resultados['LS'] = resultados['sigma'] * np.sqrt((resultados['n'] - 1) / X2_alpha_over_2)
+        return resultados
+
+    def mostrar_resultados_prueba_varianza(self, resultados):
+        if resultados:
+            self.resultados_text.insert(tk.END, f"Alpha: {resultados['alpha']}\n")
+            self.resultados_text.insert(tk.END, f"n: {resultados['n']}\n")
+            self.resultados_text.insert(tk.END, f"R: {resultados['R']}\n")
+            self.resultados_text.insert(tk.END, f"Sigma: {resultados['sigma']}\n")
+            self.resultados_text.insert(tk.END, f"Alpha/2: {resultados['alpha_over_2']}\n")
+            self.resultados_text.insert(tk.END, f"1-(alpha/2): {resultados['one_minus_alpha_over_2']}\n")
+            self.resultados_text.insert(tk.END, f"X^2 (alpha/2): {resultados['X2_alpha_over_2']}\n")
+            self.resultados_text.insert(tk.END, f"X^2 (1-(alpha/2)): {resultados['X2_one_minus_alpha_over_2']}\n")
+            self.resultados_text.insert(tk.END, f"LI: {resultados['LI']}\n")
+            self.resultados_text.insert(tk.END, f"LS: {resultados['LS']}\n\n")
+        else:
+            messagebox.showwarning("Advertencia", "No hay datos suficientes para realizar la prueba de varianza.")
+
 
     def ejecutar_prueba(self):
-         """
-        Método para ejecutar la prueba estadística seleccionada.
-        """
         archivo_path = self.archivo_entry.get()
         prueba_seleccionada = self.combo_prueba.get()
 
@@ -137,7 +164,6 @@ class InterfazPruebasEstadisticas:
                     resultado = PruebasEstadisticas.prueba_de_medias(numeros)
                     if resultado is not None:
                         self.mostrar_resultados(prueba_seleccionada, resultado)
-                        # Aquí agregamos la impresión adicional
                         if numeros:
                             R = None
                         if len(numeros) > 1:
@@ -162,14 +188,23 @@ class InterfazPruebasEstadisticas:
                         else:
                             messagebox.showwarning("Advertencia", "No hay datos suficientes para realizar la prueba de medias.")
                 elif prueba_seleccionada == "Prueba de Varianza":
-                    resultado = PruebasEstadisticas.prueba_de_varianza(numeros)
-                    if resultado is not None:
-                        self.mostrar_resultados(prueba_seleccionada, resultado)
+                    resultados = self.calcular_resultados_prueba_varianza(numeros)
+                    self.mostrar_resultados_prueba_varianza(resultados)
+                # Agregar mensaje de si pasa o no la prueba
+                    if resultados and 'n' in resultados:
+                        mensaje = ""
+                        if resultados['n'] > 1 and resultados['LI'] < resultados['sigma'] < resultados['LS']:
+                            mensaje = "Los números pasan la prueba de varianza."
+                        else:
+                            mensaje = "Los números NO pasan la prueba de varianza."
+                        # Mostrar el mensaje en la ventana de resultados
+                        self.resultados_text.insert(tk.END, f"\n{mensaje}\n")
+                    else:
+                        messagebox.showwarning("Resultado", "No se pudo calcular la prueba de varianza.")
                 elif prueba_seleccionada == "Prueba KS":
                     resultado = PruebasEstadisticas.prueba_ks(numeros)
                     self.mostrar_resultados(prueba_seleccionada, resultado)
                     self.mostrar_histograma(numeros)
-                    # Impresión adicional para la prueba de KS
                     if numeros:
                         n = len(numeros)
                         R = max(numeros) - min(numeros)
@@ -209,15 +244,11 @@ class InterfazPruebasEstadisticas:
             messagebox.showwarning("Advertencia", "Por favor seleccione un archivo y una prueba estadística.")
 
     def mostrar_histograma(self, numeros):
-        """
-        Genera un histograma a partir de una lista de números.
-
-        Parámetros:
-            numeros (list): Una lista de números para la cual se generará el histograma.
-
-        Retorna:
-            None
-        """
+       # Genera un histograma a partir de una lista de números.
+        #Parámetros:
+         #   numeros (list): Una lista de números para la cual se generará el histograma.
+        #Retorna:
+         #   None
         # Calcular la frecuencia de cada valor
         valores, frecuencias = np.unique(numeros, return_counts=True)
 
@@ -246,16 +277,12 @@ class InterfazPruebasEstadisticas:
         plt.show()
 
     def mostrar_resultados_en_tabla(self, prueba, numeros):
-         """
-        Muestra los resultados de una prueba estadística en una tabla, junto con cálculos asociados.
-
-        Parámetros:
-            prueba (str): El tipo de prueba estadística realizada.
-            numeros (list): Una lista de números sobre los cuales se realizó la prueba.
-
-        Retorna:
-            None
-        """
+        # Muestra los resultados de una prueba estadística en una tabla, junto con cálculos asociados.
+       # Parámetros:
+          #  prueba (str): El tipo de prueba estadística realizada.
+         #   numeros (list): Una lista de números sobre los cuales se realizó la prueba.
+       # Retorna:
+           # None
         ventana_tabla = tk.Toplevel(self.master)
         ventana_tabla.title("Resultados en Tabla")
 
