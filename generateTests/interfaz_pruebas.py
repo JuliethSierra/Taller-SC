@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pruebas_estadisticas import PruebasEstadisticas
 from chi2Handler import Chi2Handler
+from prueba_poker import PruebaPoker
+from collections import Counter
 
 class InterfazPruebasEstadisticas:
     def __init__(self, master):
@@ -64,7 +66,7 @@ class InterfazPruebasEstadisticas:
             else:
                 self.resultados_text.insert(tk.END, "Los números NO pasan la prueba de varianza.\n")
                 self.resultados_text.insert(tk.END, "Aceptación: No\n")
-            
+
             alpha = 0.05  # Assuming alpha value
             n = len(self.numeros)
             R = max(self.numeros) - min(self.numeros)
@@ -75,7 +77,7 @@ class InterfazPruebasEstadisticas:
             X2_one_minus_alpha_over_2 = 16.919  # Critical value for 1 - alpha/2 with degrees of freedom (n-1)
             LI = sigma * np.sqrt((n - 1) / X2_one_minus_alpha_over_2)
             LS = sigma * np.sqrt((n - 1) / X2_alpha_over_2)
-            
+
             self.resultados_text.insert(tk.END, f"Alpha: {alpha}\n")
             self.resultados_text.insert(tk.END, f"n: {n}\n")
             self.resultados_text.insert(tk.END, f"R: {R}\n")
@@ -194,9 +196,11 @@ class InterfazPruebasEstadisticas:
                         self.resultados_text.insert(tk.END, f"Mínimo: {minimo}\n")
                         self.resultados_text.insert(tk.END, f"Máximo: {maximo}\n\n")
                 elif prueba_seleccionada == "Prueba de Póker":
-                    resultado = PruebasEstadisticas.prueba_poker(numeros)
-                    if resultado is not None:
-                        self.mostrar_resultados(prueba_seleccionada, resultado)
+                 resultado = PruebasEstadisticas.prueba_poker(numeros)
+                 if resultado is not None:  # Comprobación adicional para evitar errores
+                          self.mostrar_resultados(prueba_seleccionada, resultado)
+                # Llamar a la función para mostrar los resultados en una tabla
+                          self.mostrar_resultados_en_tabla(prueba_seleccionada, numeros)
                 elif prueba_seleccionada == "Prueba Chi2":
                     intervalo = self.intervalo_entry.get()
                     if intervalo:
@@ -244,6 +248,65 @@ class InterfazPruebasEstadisticas:
 
         # Mostrar el gráfico
         plt.show()
+
+        
+    def mostrar_resultados_en_tabla(self, prueba, numeros):
+        ventana_tabla = tk.Toplevel(self.master)
+        ventana_tabla.title("Resultados en Tabla")
+
+        tabla_frame = tk.Frame(ventana_tabla)
+        tabla_frame.pack()
+
+        # Crear etiquetas para los encabezados de la tabla
+        encabezados = ("Valores RI", "Oi", "Probabilidad", "Ei", "(Ei-Oi)^2/Ei")
+        for col, encabezado in enumerate(encabezados):
+            tk.Label(tabla_frame, text=encabezado, relief=tk.RIDGE, width=15).grid(row=0, column=col, sticky=tk.NSEW)
+
+        # Calcular frecuencias de los valores
+        frecuencias = Counter(numeros)
+
+        # Calcular total de observaciones
+        total_observaciones = len(numeros)
+
+        # Calcular Ei y chi cuadrado para cada valor
+        ei_values = []
+        chi_cuadrado_values = []
+        for valor, frecuencia in frecuencias.items():
+            ei = total_observaciones * (1/6)  # Para la prueba de poker
+            ei_values.append(ei)
+            chi_cuadrado = ((frecuencia - ei) ** 2) / ei
+            chi_cuadrado_values.append(chi_cuadrado)
+
+        # Calcular sumatoria de chi cuadrado
+        suma_chi_cuadrado = sum(chi_cuadrado_values)
+
+        # Llenar la tabla con los datos
+        for i, (valor, frecuencia, ei, chi_cuadrado) in enumerate(zip(frecuencias.keys(), frecuencias.values(), ei_values, chi_cuadrado_values), start=1):
+            probabilidad = frecuencia / total_observaciones
+            chi_cuadrado_resultado = (ei - frecuencia) ** 2 / ei if ei != 0 else 0
+            # Establecer un ancho más amplio para la columna de valores
+            tk.Label(tabla_frame, text=valor, width=20).grid(row=i, column=0)
+            tk.Label(tabla_frame, text=frecuencia).grid(row=i, column=1)
+            tk.Label(tabla_frame, text=f"{probabilidad:.4f}").grid(row=i, column=2)
+            tk.Label(tabla_frame, text=f"{ei:.4f}").grid(row=i, column=3)
+            tk.Label(tabla_frame, text=f"{chi_cuadrado_resultado:.4f}").grid(row=i, column=4)
+
+        # Agregar fila para la sumatoria de chi cuadrado
+        tk.Label(tabla_frame, text="Suma").grid(row=len(frecuencias) + 1, column=0, sticky=tk.E)
+        tk.Label(tabla_frame, text="").grid(row=len(frecuencias) + 1, column=1)
+        tk.Label(tabla_frame, text="").grid(row=len(frecuencias) + 1, column=2)
+        tk.Label(tabla_frame, text="").grid(row=len(frecuencias) + 1, column=3)
+        tk.Label(tabla_frame, text=f"{suma_chi_cuadrado:.4f}").grid(row=len(frecuencias) + 1, column=4)
+
+        # Agregar clasificación vertical en la tabla
+        clasificacion_vertical = PruebaPoker.prueba_poker(list(frecuencias.keys()))
+        tk.Label(tabla_frame, text="Clasificación Vertical:").grid(row=len(frecuencias) + 2, column=0, sticky=tk.E)
+        tk.Label(tabla_frame, text=clasificacion_vertical).grid(row=len(frecuencias) + 2, column=1, columnspan=4, sticky=tk.W)
+
+        # Hacer que la tabla sea redimensionable
+        for i in range(len(frecuencias) + 2):
+            tabla_frame.grid_rowconfigure(i, weight=1)
+            tabla_frame.grid_columnconfigure(i, weight=1)
 
 def main():
     root = tk.Tk()
