@@ -10,6 +10,12 @@ from collections import Counter
 
 class InterfazPruebasEstadisticas:
     def __init__(self, master):
+        """
+        Constructor de la clase InterfazPruebasEstadisticas.
+
+        Args:
+            master: El widget padre para esta interfaz.
+        """
         self.master = master
         master.title("Pruebas Estadísticas")
 
@@ -52,11 +58,21 @@ class InterfazPruebasEstadisticas:
         self.resultados_text.pack()
 
     def cargar_archivo(self):
+         """
+        Método para cargar un archivo seleccionado por el usuario.
+        """
         archivo_path = filedialog.askopenfilename(initialdir=os.getcwd(), title="Seleccione un archivo")
         self.archivo_entry.delete(0, tk.END)
         self.archivo_entry.insert(0, archivo_path)
 
     def mostrar_resultados(self, prueba, resultado):
+         """
+        Método para mostrar los resultados de la prueba estadística.
+
+        Args:
+            prueba (str): El nombre de la prueba estadística.
+            resultado (bool): El resultado de la prueba (pasa o no pasa).
+        """
         self.resultados_text.insert(tk.END, f"Resultado de la {prueba}:\n")
         if prueba == "Prueba de Varianza":
             if resultado:
@@ -94,6 +110,9 @@ class InterfazPruebasEstadisticas:
                 self.resultados_text.insert(tk.END, f"Los números NO pasan la {prueba}.\n\n")
 
     def ejecutar_prueba(self):
+         """
+        Método para ejecutar la prueba estadística seleccionada.
+        """
         archivo_path = self.archivo_entry.get()
         prueba_seleccionada = self.combo_prueba.get()
 
@@ -156,7 +175,7 @@ class InterfazPruebasEstadisticas:
                         R = max(numeros) - min(numeros)
                         minimo = min(numeros)
                         maximo = max(numeros)
-                        alpha = 0.05  # Puedes ajustar este valor según tus necesidades
+                        alpha = 0.05  
                         aceptacion = "Sí" if resultado else "No"
                         self.resultados_text.insert(tk.END, f"Para la prueba KS:\n")
                         self.resultados_text.insert(tk.END, f"Pasa la prueba: {aceptacion}\n")
@@ -190,6 +209,15 @@ class InterfazPruebasEstadisticas:
             messagebox.showwarning("Advertencia", "Por favor seleccione un archivo y una prueba estadística.")
 
     def mostrar_histograma(self, numeros):
+        """
+        Genera un histograma a partir de una lista de números.
+
+        Parámetros:
+            numeros (list): Una lista de números para la cual se generará el histograma.
+
+        Retorna:
+            None
+        """
         # Calcular la frecuencia de cada valor
         valores, frecuencias = np.unique(numeros, return_counts=True)
 
@@ -218,6 +246,16 @@ class InterfazPruebasEstadisticas:
         plt.show()
 
     def mostrar_resultados_en_tabla(self, prueba, numeros):
+         """
+        Muestra los resultados de una prueba estadística en una tabla, junto con cálculos asociados.
+
+        Parámetros:
+            prueba (str): El tipo de prueba estadística realizada.
+            numeros (list): Una lista de números sobre los cuales se realizó la prueba.
+
+        Retorna:
+            None
+        """
         ventana_tabla = tk.Toplevel(self.master)
         ventana_tabla.title("Resultados en Tabla")
 
