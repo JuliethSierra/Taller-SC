@@ -15,7 +15,6 @@ class InterfazPruebasEstadisticas:
 
         self.label = tk.Label(master, text="Seleccione un archivo o ingrese números separados por comas:")
         self.label.pack()
-        self.numeros = []
 
         self.cargar_archivo_button = tk.Button(master, text="Cargar archivo", command=self.cargar_archivo)
         self.cargar_archivo_button.pack()
@@ -120,17 +119,17 @@ class InterfazPruebasEstadisticas:
                     if resultado is not None:
                         self.mostrar_resultados(prueba_seleccionada, resultado)
                         # Aquí agregamos la impresión adicional
-                        if numeros:  
-                            R = None  
-                        if len(numeros) > 1:  
+                        if numeros:
+                            R = None
+                        if len(numeros) > 1:
                             R = max(numeros) - min(numeros)
-                        if R is not None:  
-                            alpha = 0.05  
-                            n = len(numeros)  
-                            sigma = np.std(numeros)  
-                            alpha_over_2 = alpha / 2  
-                            one_minus_alpha_over_2 = 1 - alpha_over_2  
-                            z = 1.96  
+                        if R is not None:
+                            alpha = 0.05
+                            n = len(numeros)
+                            sigma = np.std(numeros)
+                            alpha_over_2 = alpha / 2
+                            one_minus_alpha_over_2 = 1 - alpha_over_2
+                            z = 1.96
                             LI = np.mean(numeros) - z * (sigma / np.sqrt(n))
                             LS = np.mean(numeros) + z * (sigma / np.sqrt(n))
 
@@ -147,34 +146,6 @@ class InterfazPruebasEstadisticas:
                     resultado = PruebasEstadisticas.prueba_de_varianza(numeros)
                     if resultado is not None:
                         self.mostrar_resultados(prueba_seleccionada, resultado)
-                        # Aquí agregamos la impresión adicional para la prueba de varianza
-                        if numeros:  
-                            R = None  
-                        if len(numeros) > 1:  
-                            R = max(numeros) - min(numeros)
-                        if R is not None:  
-                            alpha = 0.05  
-                            n = len(numeros)  
-                            sigma = np.sqrt(PruebasEstadisticas.varianza_conjunto(numeros))  
-                            alpha_over_2 = alpha / 2  
-                            one_minus_alpha_over_2 = 1 - alpha_over_2  
-                            X2_alpha_over_2 = 3.325  
-                            X2_one_minus_alpha_over_2 = 16.919  
-                            LI = sigma * np.sqrt((n - 1) / X2_one_minus_alpha_over_2)  
-                            LS = sigma * np.sqrt((n - 1) / X2_alpha_over_2)  
-
-                            self.resultados_text.insert(tk.END, f"Alpha: {alpha}\n")
-                            self.resultados_text.insert(tk.END, f"n: {n}\n")
-                            self.resultados_text.insert(tk.END, f"R: {R}\n")
-                            self.resultados_text.insert(tk.END, f"Sigma: {sigma}\n")
-                            self.resultados_text.insert(tk.END, f"Alpha/2: {alpha_over_2}\n")
-                            self.resultados_text.insert(tk.END, f"1-(alpha/2): {one_minus_alpha_over_2}\n")
-                            self.resultados_text.insert(tk.END, f"X^2 (alpha/2): {X2_alpha_over_2}\n")
-                            self.resultados_text.insert(tk.END, f"X^2 (1-(alpha/2)): {X2_one_minus_alpha_over_2}\n")
-                            self.resultados_text.insert(tk.END, f"LI: {LI}\n")
-                            self.resultados_text.insert(tk.END, f"LS: {LS}\n\n")
-                        else:
-                            messagebox.showwarning("Advertencia", "No hay datos suficientes para realizar la prueba de varianza.")
                 elif prueba_seleccionada == "Prueba KS":
                     resultado = PruebasEstadisticas.prueba_ks(numeros)
                     self.mostrar_resultados(prueba_seleccionada, resultado)
@@ -196,11 +167,11 @@ class InterfazPruebasEstadisticas:
                         self.resultados_text.insert(tk.END, f"Mínimo: {minimo}\n")
                         self.resultados_text.insert(tk.END, f"Máximo: {maximo}\n\n")
                 elif prueba_seleccionada == "Prueba de Póker":
-                 resultado = PruebasEstadisticas.prueba_poker(numeros)
-                 if resultado is not None:  # Comprobación adicional para evitar errores
-                          self.mostrar_resultados(prueba_seleccionada, resultado)
-                # Llamar a la función para mostrar los resultados en una tabla
-                          self.mostrar_resultados_en_tabla(prueba_seleccionada, numeros)
+                    resultado = PruebasEstadisticas.prueba_poker(numeros)
+                    if resultado is not None:  # Comprobación adicional para evitar errores
+                        self.mostrar_resultados(prueba_seleccionada, resultado)
+                        # Llamar a la función para mostrar los resultados en una tabla
+                        self.mostrar_resultados_en_tabla(prueba_seleccionada, numeros)
                 elif prueba_seleccionada == "Prueba Chi2":
                     intervalo = self.intervalo_entry.get()
                     if intervalo:
@@ -217,9 +188,6 @@ class InterfazPruebasEstadisticas:
                 messagebox.showerror("Error", f"No se pudo cargar el archivo: {str(e)}")
         else:
             messagebox.showwarning("Advertencia", "Por favor seleccione un archivo y una prueba estadística.")
-
-
-
 
     def mostrar_histograma(self, numeros):
         # Calcular la frecuencia de cada valor
@@ -249,13 +217,24 @@ class InterfazPruebasEstadisticas:
         # Mostrar el gráfico
         plt.show()
 
-        
     def mostrar_resultados_en_tabla(self, prueba, numeros):
         ventana_tabla = tk.Toplevel(self.master)
         ventana_tabla.title("Resultados en Tabla")
 
-        tabla_frame = tk.Frame(ventana_tabla)
+        # Creamos un canvas para permitir el desplazamiento vertical
+        canvas = tk.Canvas(ventana_tabla)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        tabla_frame = tk.Frame(canvas)
         tabla_frame.pack()
+
+        # Agregamos el frame de la tabla al canvas
+        canvas.create_window((0, 0), window=tabla_frame, anchor=tk.NW)
+
+        # Creamos una barra de desplazamiento para moverse verticalmente
+        scrollbar = tk.Scrollbar(ventana_tabla, orient=tk.VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        canvas.config(yscrollcommand=scrollbar.set)
 
         # Crear etiquetas para los encabezados de la tabla
         encabezados = ("Valores RI", "Oi", "Probabilidad", "Ei", "(Ei-Oi)^2/Ei")
@@ -307,6 +286,9 @@ class InterfazPruebasEstadisticas:
         for i in range(len(frecuencias) + 2):
             tabla_frame.grid_rowconfigure(i, weight=1)
             tabla_frame.grid_columnconfigure(i, weight=1)
+
+        # Configurar el canvas para que se desplace con la rueda del ratón
+        canvas.bind_all("<MouseWheel>", lambda event: canvas.yview_scroll(-1 * (event.delta // 120), "units"))
 
 def main():
     root = tk.Tk()
